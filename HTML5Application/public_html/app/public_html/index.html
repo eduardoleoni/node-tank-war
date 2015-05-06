@@ -1,0 +1,224 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Socket.IO chat</title>
+   
+    <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
+    <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+    
+    <script>
+        var myself = [];
+        var socket = io();
+        var isSet = false;
+        var lastMove = "up";
+        var shooting = false;
+        socket.on('connecting', function(allPlayers){
+            
+            for (index = 0; index < allPlayers.length; ++index) {
+                drawF(allPlayers[index]);
+                
+                if (index === allPlayers.length - 1){
+                    if (isSet === false){
+                        myself = allPlayers[allPlayers.length - 1];
+                        isSet = true;
+                    }
+                }
+            }
+            
+        });
+        
+        socket.on('move', function(player){
+            
+            move(player);
+            
+        });
+        
+        socket.on('shoot', function(shootingData){
+            
+            shoot(shootingData[0], shootingData[1], shootingData[2]);
+            
+        });
+        
+        socket.on('respawn', function(playerId){
+            
+            $("#"+playerId).remove();
+            destroy(playerId);
+            if (playerId == myself[0]){
+                
+                alert("You got shoot!");
+                location.reload();
+            }
+            
+            
+            
+        });
+        
+        
+      </script>
+  </head>
+
+  <body>
+    
+   <script>  
+     
+    function drawF(element){
+        draw(element[0], element[1], element[2], element[3]);
+    }
+    function draw(id, background, topPos, leftPos){
+        
+        document.body.innerHTML += '<div class ="hero" id = "' + id + '" style="position:absolute; width:2em; height:2em; background:' + background + '; top:' + topPos + '%;left:' + leftPos + '%;"></div>';
+
+    }
+    
+    function move(player){
+        $("#"+player[0]).css("left",player[3]+"%");
+        $("#"+player[0]).css("top",player[2]+"%");
+    }
+    
+    function generateRandom(min, max){
+        return Math.floor(Math.random() * (max - min)) + min;
+    }
+    
+    function shootRequest(){
+        if (shooting == false){
+            shooting = true;
+
+            shootId = generateRandom(1,9999);
+            shootingData = [myself, shootId, lastMove]
+            socket.emit("askToShoot", shootingData);
+            
+        }
+
+    }
+    
+    
+    function respawnRequest(id){
+        socket.emit("gotShoot", id);
+    }
+    
+    function destroy(playerId){
+        socket.emit("destroy", playerId);
+    }
+    
+    function shoot(player, bulletId, lastMove){
+        
+        topPos = player[2];
+        leftPos = player[3];
+        document.body.innerHTML += '<div class = "bullet" id = "bullet_' + bulletId + '" style="position:absolute; width:.7em; height:.7em; background:#eee; top: ' + topPos + '%; left:' + leftPos + '%;"></div>';
+        moveBullet(player, bulletId, lastMove);
+        
+        
+    }
+    
+    
+    function generatePosition(){
+
+        return generateRandom(1, 100);
+
+    }
+    
+    function moveBullet(shooter, bulletId, lastMove){
+        
+        topInst = "=";
+        leftInst = "=";
+        
+        if (lastMove == "up"){
+            topInst = "-=500";
+        }
+        
+        if (lastMove == "down"){
+            topInst= "+=500";
+        }
+        
+        if (lastMove == "right"){
+            leftInst = "+=500";
+        }
+        
+        if (lastMove == "left"){
+           leftInst = "-=500";
+        }
+        
+        $( "#bullet_" + bulletId ).animate({
+            opacity: 0.25,
+            top: topInst,
+            left: leftInst
+          }, {
+            duration: 1000, 
+            complete: function() {
+                          $( "#bullet_" + bulletId ).remove();
+                          shooting = false;
+                      },
+            step: function(){
+                        thisBulletsTop = $(this).position().top;
+                        thisBulletsLeft = $(this).position().left;
+                        thisBullet = $(this)
+
+                        $( ".hero" ).each(function( index ) {
+                            thisHerosTop = $( this ).position().top;
+                            thisHerosLeft = $( this ).position().left;
+
+
+                            if ((thisHerosTop-15 <= thisBulletsTop) && (thisHerosTop+15 >= thisBulletsTop)){
+
+                                if ((thisHerosLeft-15 <= thisBulletsLeft) && (thisHerosLeft+15 >= thisBulletsLeft)){
+
+                                    if ($(this).attr("id") != shooter[0]){
+                                        respawnRequest($(this).attr("id"));
+                                        thisBullet.remove();
+                                    }
+
+                                }
+
+
+                            }
+                        });
+
+
+
+                  }
+          });
+        
+       
+    }
+    
+    
+    $(document).keydown(function(e) {
+        switch(e.which) {
+            case 37: 
+                myself[3] = myself[3] - 1;
+                socket.emit("askToMove", myself);
+                lastMove = 'left';
+            break;
+
+            case 38: 
+                myself[2] = myself[2] - 1;
+                socket.emit("askToMove", myself);
+                lastMove = 'up';
+            break;
+
+            case 39: 
+                myself[3] = myself[3] + 1;
+                socket.emit("askToMove", myself);
+                lastMove = 'right';
+            break;
+
+            case 40: 
+                myself[2] = myself[2] + 1;
+                socket.emit("askToMove", myself);
+                lastMove = 'down';
+            break;
+            
+            
+            case 13: 
+                shootRequest();
+            break;
+            
+            default: 
+                return; // exit this handler for other keys
+        }
+        e.preventDefault(); // prevent the default action (scroll / move caret)
+    });
+    
+    </script>
+  </body>
+</html>
