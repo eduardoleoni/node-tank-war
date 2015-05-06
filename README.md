@@ -3,3 +3,5 @@ Shooting Squares is an online multiplayer shooter game made using NodeJS, Expres
 
 It does look cool, doesn't it? 
 Well it's not, it's just a bunch of squares throwing smaller squares in each other. Good for learners though :)
+
+Use arrows to move around and enter to shoot your enemies.
