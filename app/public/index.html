@@ -49,8 +49,15 @@
         });
         
         socket.on('death', function(playerId){
-
-            $("#"+playerId).remove();
+            
+            $("#"+playerId).css("background", "url('/media/explosion.gif')");
+            $("#"+playerId).css("width", "3em");
+            $("#"+playerId).css("height", "4em");
+            $("#"+playerId).css("transform", "rotate(0deg)");
+            $("#"+playerId).fadeOut( "slow", function() {
+                $("#"+playerId).remove();
+            });
+            
             
             if (playerId == myself[0]){
                 
