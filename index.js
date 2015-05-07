@@ -7,7 +7,7 @@ var add = [];
 
 
 app.get('/', function(req, res){
-  res.sendFile(__dirname + '/app/public_html/index.html');
+  res.sendFile(__dirname + '/app/public/index.html');
 });
 
 io.on('connection', function(socket){
@@ -57,8 +57,8 @@ io.on('connection', function(socket){
 io.emit('some event', { for: 'everyone' });
 
 
-http.listen(3002, function(){
-  console.log('listening on *:3001');
+http.listen(3000, function(){
+  console.log('listening on *:3000');
 });
 
 
