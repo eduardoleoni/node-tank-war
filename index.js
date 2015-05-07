@@ -19,14 +19,18 @@ app.get('/', function(req, res){
 });
 
 
+
 io.on('connection', function(socket){
-  console.log('user connected:');
+    
+  console.log('user connected');
+
   connectCounter++;
   create(connectCounter);
   
-  io.emit('connecting', allPlayers);
+ io.emit('connecting', allPlayers);
   
-  
+ 
+
   
   socket.on('askToMove', function(player){
       io.emit('move', player);
@@ -37,23 +41,43 @@ io.on('connection', function(socket){
   });
   
    socket.on('gotShoot', function(playerId){
-      io.emit('respawn', playerId);
-   });
-   
-   socket.on('destroy', function(playerId){
-       
-       for (index = 0; index < allPlayers.length; ++index) {
+      
+
+      for (index = 0; index < allPlayers.length; ++index) {
 
             if (playerId == allPlayers[index][0]){
                 allPlayers.splice(index, 1);
             }
             
-        }
+            
+       }
        
+      
+       io.emit('death', playerId);
        
-        io.emit('test');
    });
+   
+   
+   
+   socket.on('naming', function(player){
+      
+      for (index = 0; index < allPlayers.length; ++index) {
+
+            if (player[0] == allPlayers[index][0]){
+                allPlayers[index][6] = player[6];
+            }
+            
+       }
+      
+  });
   
+  
+    socket.on('respawn', function(player){
+       connectCounter++;
+       create(connectCounter);
+       io.emit('connecting', allPlayers);
+       
+  });
   
   socket.on('disconnect', function(){
     console.log('user disconnected');
@@ -76,7 +100,7 @@ function create(id){
     topPos = generatePosition();
     leftPos = generatePosition();
 
-    add = [id, background, topPos, leftPos];
+    add = [id, background, topPos, leftPos, "up"];
     allPlayers.push(add);
     
     return [id, background, topPos, leftPos];

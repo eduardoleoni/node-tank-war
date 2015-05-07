@@ -10,14 +10,20 @@ function shootRequest(){
 
 }
 
-function respawnRequest(id){
-    socket.emit("gotShoot", id);
+function deathRequest(id){
+    
+    if (lastdeath != id){
+        socket.emit("gotShoot", id);
+        lastdeath = id;
+    }
 }
 
-function destroyRequest(playerId){
-    socket.emit("destroy", playerId);
-}
 
+
+function respawnRequest(){
+    
+    socket.emit("respawn");
+}
 
 
 

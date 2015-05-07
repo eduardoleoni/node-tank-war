@@ -1,13 +1,17 @@
 body { background: url("/media/grass.jpg"); max-width: 100%; overflow: hidden;}
 
+
+
 .bullet { background: url("/media/fire_bullet.png"); background-size:cover; position:absolute; width:1.7em; height:.7em;  border-radius: 1em; }
+.bullet.up{ transform: rotate(-90deg);}
+.bullet.down{transform: rotate(90deg);}
+.bullet.left{transform: rotate(180deg);}
+.bullet.right{transform: rotate(0deg);}
 
-.up{ transform: rotate(-90deg);}
-
-.down{transform: rotate(90deg);}
-
-.left{transform: rotate(180deg);}
-
-.right{transform: rotate(0deg);}
 
 .hero { background: url("/media/tank.png") no-repeat; position:absolute; width:2em; height:2em; background-size:cover; transition:all ease 0.2s; }
+.hero.up {transform: rotate(0deg);}
+.hero.down {transform: rotate(180deg);}
+.hero.left {transform: rotate(-90deg);}
+.hero.right {transform: rotate(90deg);}
+.hero .name { color: white; font-weight: bold; position: absolute; margin-top: 2em; }

@@ -14,13 +14,15 @@
     
     
     <script>
+        
         var myself = [];
         var socket = io();
         var isSet = false;
         var lastMove = "up";
         var shooting = false;
+        var lastdeath = 0;
         socket.on('connecting', function(allPlayers){
-            
+           
             for (index = 0; index < allPlayers.length; ++index) {
                 drawF(allPlayers[index]);
                 
@@ -46,14 +48,21 @@
             
         });
         
-        socket.on('respawn', function(playerId){
-            
+        socket.on('death', function(playerId){
+
             $("#"+playerId).remove();
-            destroyRequest(playerId);
+            
             if (playerId == myself[0]){
                 
-                alert("You got shoot!");
-                location.reload();
+                isSet = false;
+                
+                decision = confirm("You got killed, press ok to play again, cancel to keep watching");
+                if (decision == true){
+                    respawnRequest();
+                }else{
+                    isSet = true;
+                }
+                
             }
             
             
@@ -68,37 +77,64 @@
     
    <script>  
      
-   
+   var person = prompt("Please enter your name");
+        
+    if (person !== null) {
+
+
+            myself[6] = person;
+            socket.emit('naming', myself);
+
+
+    }else{
+        location.reload();
+    }
     
     
     $(document).keydown(function(e) {
+        
+        myself[6] = person;
         switch(e.which) {
             case 37: 
-                myself[3] = myself[3] - 1.5;
-                socket.emit("askToMove", myself);
                 lastMove = 'left';
-                $("#"+myself[0]).css("transform", "rotate(-90deg)");
+                myself[3] = myself[3] - 1.5;
+                if (myself[3] < 0){
+                    myself[3] = 0;
+                }
+                myself[5] = lastMove;
+                socket.emit("askToMove", myself);
             break;
 
             case 38: 
-                myself[2] = myself[2] - 1.5;
-                socket.emit("askToMove", myself);
                 lastMove = 'up';
-                $("#"+myself[0]).css("transform", "rotate(0deg)");
+                myself[5] = lastMove;
+                myself[2] = myself[2] - 1.5;
+                if (myself[2] < 0){
+                    myself[2] = 0;
+                }
+                socket.emit("askToMove", myself);
             break;
 
             case 39: 
+               lastMove = 'right';
+                myself[5] = lastMove;
                 myself[3] = myself[3] + 1.5;
+                if (myself[3] > 99){
+                    myself[3] = 98;
+                }
                 socket.emit("askToMove", myself);
-                lastMove = 'right';
-                $("#"+myself[0]).css("transform", "rotate(90deg)");
+
             break;
 
             case 40: 
-                myself[2] = myself[2] + 1.5;
-                socket.emit("askToMove", myself);
                 lastMove = 'down';
-                $("#"+myself[0]).css("transform", "rotate(180deg)");
+                myself[5] = lastMove;
+                myself[2] = myself[2] + 1.5;
+                if (myself[2] > 98){
+                    myself[2] = 97;
+                }
+                socket.emit("askToMove", myself);
+
             break;
             
             

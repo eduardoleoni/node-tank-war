@@ -3,12 +3,25 @@ function drawF(element){
 }
 function draw(id, background, topPos, leftPos){
 
-    document.body.innerHTML += '<div class ="hero" id = "' + id + '" style=" top:' + topPos + '%;left:' + leftPos + '%;"></div>';
+    if($('#'+id ).length == 0) {
+        document.body.innerHTML += '<div class ="hero" id = "' + id + '" style=" top:' + topPos + '%;left:' + leftPos + '%;"></div>';
+    }
+    
 }
 
 function move(player){
     $("#"+player[0]).css("left",player[3]+"%");
     $("#"+player[0]).css("top",player[2]+"%");
+    $("#"+player[0]).html("<span class = 'name'>" + player[6] + "</span>");
+    clearMoveClasses(player);
+    $("#"+player[0]).addClass(player[5]);
+}
+
+function clearMoveClasses(player){
+    $("#"+player[0]).removeClass("up");
+    $("#"+player[0]).removeClass("down");
+    $("#"+player[0]).removeClass("left");
+    $("#"+player[0]).removeClass("right");
 }
 
 function shoot(player, bulletId, lastMove){
@@ -66,7 +79,7 @@ function moveBullet(shooter, bulletId, lastMove){
                             if ((thisHerosLeft-15 <= thisBulletsLeft) && (thisHerosLeft+15 >= thisBulletsLeft)){
 
                                 if ($(this).attr("id") != shooter[0]){
-                                    respawnRequest($(this).attr("id"));
+                                    deathRequest($(this).attr("id"));
                                     thisBullet.remove();
                                 }
 
