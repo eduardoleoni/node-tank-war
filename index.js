@@ -1,14 +1,23 @@
-var app = require('express')();
+var express = require('express');
+var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
+
+
+
 var connectCounter = 0;
 var allPlayers = [];
 var add = [];
 
 
+app.use('/media', express.static(__dirname + '/app/media'));
+app.use('/css', express.static(__dirname + '/app/css'));
+app.use(express.static(__dirname + '/app/public'));
+
 app.get('/', function(req, res){
   res.sendFile(__dirname + '/app/public/index.html');
 });
+
 
 io.on('connection', function(socket){
   console.log('user connected:');
@@ -48,8 +57,6 @@ io.on('connection', function(socket){
   
   socket.on('disconnect', function(){
     console.log('user disconnected');
-    //io.emit('chat message', "someone has just left");
-    
   });
   
 });
@@ -76,9 +83,7 @@ function create(id){
 
  }
 
-function generateRandom(min, max){
-    return Math.floor(Math.random() * (max - min)) + min;
-}
+
 
 function generatePosition(){
 
@@ -97,4 +102,8 @@ function generateColor(){
 
     return "#" + number1 + number2 + number3 + number4 + number5 + number6;
 
+}
+
+function generateRandom(min, max){
+    return Math.floor(Math.random() * (max - min)) + min;
 }

@@ -1,0 +1,13 @@
+body { background: url("/media/grass.jpg"); max-width: 100%; overflow: hidden;}
+
+.bullet { background: url("/media/fire_bullet.png"); background-size:cover; position:absolute; width:1.7em; height:.7em;  border-radius: 1em; }
+
+.up{ transform: rotate(-90deg);}
+
+.down{transform: rotate(90deg);}
+
+.left{transform: rotate(180deg);}
+
+.right{transform: rotate(0deg);}
+
+.hero { background: url("/media/tank.png") no-repeat; position:absolute; width:2em; height:2em; background-size:cover; transition:all ease 0.2s; }
