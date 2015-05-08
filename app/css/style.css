@@ -9,7 +9,7 @@ body { background: url("/media/grass.jpg"); max-width: 100%; overflow: hidden;}
 .bullet.right{transform: rotate(0deg);}
 
 
-.hero { background: url("/media/tank.png") no-repeat; position:absolute; width:2em; height:2em; background-size:cover; transition:all ease 0.2s; }
+.hero { background: url("/media/tank.png") no-repeat; position:absolute; width:2em; height:2em; background-size:cover; transition: all ease 0.2s; }
 .hero.up {transform: rotate(0deg);}
 .hero.down {transform: rotate(180deg);}
 .hero.left {transform: rotate(-90deg);}

@@ -60,6 +60,7 @@ function moveBullet(shooter, bulletId, lastMove){
         left: leftInst
       }, {
         duration: 1000, 
+        queue: false,
         complete: function() {
                       $( "#bullet_" + bulletId ).remove();
                       shooting = false;
