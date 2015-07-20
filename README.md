@@ -6,4 +6,4 @@ This is a project of a game I built for learning Socket.IO, it's excelent for pe
 Use arrows to move around and enter to shoot your enemies.
 
 An example is available here:
-https://tank-war.herokuapp.com/
+http://tankwar.eduardoleoni.com.br/
